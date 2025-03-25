@@ -39,11 +39,11 @@ def all_jobs_completed():
 
 if __name__ == "__main__":
     print("Running script1.py...")
-    subprocess.run(["python", "resourcecreate.py"], check=True)
+    subprocess.run(["python", "src/resourcecreate.py"], check=True)
 
     print("Waiting for all Azure ML jobs to complete...")
     while not all_jobs_completed():
         time.sleep(60) 
 
     print("All jobs completed! Running script2.py...")
-    subprocess.run(["python", "runpipline.py"], check=True)
+    subprocess.run(["python", "src/runpipline.py"], check=True)
