@@ -172,8 +172,8 @@ if __name__ == "__main__":
         compute_instance_name = config["compute_instance_name"],
         compute_cluster_name = config["compute_cluster_name"],
         TENANT_ID = config["TENANT_ID"],
-        CLIENT_ID = config["AZURE_CLIENT_ID"],
-        CLIENT_SECRET = config["AZURE_CLIENT_SECRET"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
         location=config["location"],
     )
 
