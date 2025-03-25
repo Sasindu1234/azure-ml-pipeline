@@ -170,7 +170,7 @@ if __name__ == "__main__":
         compute_cluster_name = config["compute_cluster_name"],
         location=config["location"],
     )
-"""
+
 
     create_containers_and_upload_files(
         connect_str=config["connect_str"],
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         account_keyvalue=config["account_keyvalue"],
         workspace_name= workspace_name
     )
-
+"""
     create_environment(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
