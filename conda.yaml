@@ -1,0 +1,27 @@
+name: clustertestingenvironment
+version: 1
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8  # Specify the Python version
+  - pip  # Ensure pip is installed
+  - pip:
+    - matplotlib  # Plotting library
+    - psutil  # System monitoring and process utilities
+    - tqdm  # Progress bars for loops
+    - pandas  # Data manipulation and analysis
+    - scipy  # Scientific computing and technical computing
+    - numpy  # Numerical computing
+    - ipykernel  # Jupyter kernel for Python
+    - azureml-sdk  # Azure ML SDK (includes azureml-core, azureml-defaults, etc.)
+    - azureml-core  # Core Azure ML functionality
+    - azureml-defaults  # Default dependencies for Azure ML
+    - azureml-mlflow  # MLflow integration with Azure ML
+    - azureml-telemetry  # Telemetry for Azure ML
+    - scikit-learn  # Machine learning library
+    - debugpy  # Debugging tool for Python
+    - pyodbc  # ODBC database connectivity
+    - openpyxl  # Excel file manipulation
+    - azure-ai-ml  # Azure AI ML SDK (v2)
+    - mltable  # ML table library for data handling

@@ -1,0 +1,31 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: cluster_data
+display_name: Cluster Data for Leave and Date
+version: 1
+type: command
+inputs:
+  leave_type_data_path:
+    type: uri_folder
+  leave_type_dict_path:
+    type: uri_folder
+  date_clustering_data_path:
+    type: uri_folder
+  date_clustering_dict_path:
+    type: uri_folder
+  tenant_id:
+    type: string
+
+outputs:
+  clustered_results:
+    type: uri_folder
+
+code: ./src
+environment: "azureml:clustertestingenvironment:1"
+command: >-
+  python cluster.py
+  --leave_type_data_path ${{inputs.leave_type_data_path}}
+  --leave_type_dict_path ${{inputs.leave_type_dict_path}}
+  --date_clustering_data_path ${{inputs.date_clustering_data_path}}
+  --date_clustering_dict_path ${{inputs.date_clustering_dict_path}}
+  --tenant_id ${{inputs.tenant_id}}
+  --result_folder ${{outputs.clustered_results}}
