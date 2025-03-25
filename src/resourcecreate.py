@@ -44,11 +44,8 @@ def create_ml_resources(subscription_id, resource_group,workspace_name,compute_i
 
 
 def create_containers_and_upload_files(connect_str, container_names, tenant_ids, local_file_paths):
-   
-    # Initialize BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 
-    # Create containers
     for container_name in container_names:
         container_client = blob_service_client.get_container_client(container_name)
         if not container_client.exists():
@@ -57,15 +54,18 @@ def create_containers_and_upload_files(connect_str, container_names, tenant_ids,
         else:
             print(f"Container '{container_name}' already exists.")
 
-    # Organize tenant files in rawdata container
     container_client = blob_service_client.get_container_client("rawdata")
     for tenant_id in tenant_ids:
         tenant_folder = f"{tenant_id}/"
         for file_name, local_path in local_file_paths.items():
             blob_client = container_client.get_blob_client(tenant_folder + file_name)
-            with open(local_path, "rb") as data:
-                blob_client.upload_blob(data)
-            print(f"Uploaded '{file_name}' for tenant {tenant_id}.")
+            if not blob_client.exists():  # Prevents error if blob already exists
+                with open(local_path, "rb") as data:
+                    blob_client.upload_blob(data)
+                print(f"Uploaded '{file_name}' for tenant {tenant_id}.")
+            else:
+                print(f"Blob '{file_name}' already exists for tenant {tenant_id}, skipping upload.")
+
 
 
 def create_datastore(subscription_id, resource_group, account_keyvalue,workspace_name):
