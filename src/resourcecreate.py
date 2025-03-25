@@ -1,4 +1,4 @@
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential,ClientSecretCredential
 from azure.ai.ml import MLClient
 from azure.ai.ml.entities import Workspace, ComputeInstance, AmlCompute
 import datetime
@@ -11,9 +11,9 @@ import os
 
 
 
-def create_ml_resources(subscription_id, resource_group,workspace_name,compute_instance_name,compute_cluster_name,location="eastus"):
+def create_ml_resources(subscription_id, resource_group,workspace_name,compute_instance_name,compute_cluster_name,TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
     # Initialize MLClient
-    credential = DefaultAzureCredential()
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
 
@@ -138,6 +138,9 @@ def create_environment(subscription_id, resource_group,workspace_name):
 if __name__ == "__main__":
     # Load configuration from config.json
     config = {
+        "TENANT_ID" : os.getenv("AZURE_TENANT_ID"),
+        "CLIENT_ID" : os.getenv("AZURE_CLIENT_ID"),
+        "CLIENT_SECRET" : os.getenv("AZURE_CLIENT_SECRET"),
         "subscription_id": os.getenv("SUBSCRIPTION_ID"),
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
@@ -168,6 +171,9 @@ if __name__ == "__main__":
         workspace_name= workspace_name,
         compute_instance_name = config["compute_instance_name"],
         compute_cluster_name = config["compute_cluster_name"],
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["AZURE_CLIENT_ID"],
+        CLIENT_SECRET = config["AZURE_CLIENT_SECRET"],
         location=config["location"],
     )
 
