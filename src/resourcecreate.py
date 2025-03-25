@@ -120,7 +120,7 @@ def create_environment(subscription_id, resource_group,workspace_name):
 
 
     # Define the environment
-    env_name = "clustertestingenvironments"
+    env_name = "clustertestingenvironment"
     env = Environment(
         image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04",
         name=env_name,
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     print(f"Creating ML resources for workspace '{workspace_name}'...")
     # Call functions with configuration values
     
-    """
+    
     create_ml_resources(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         account_keyvalue=config["account_keyvalue"],
         workspace_name= workspace_name
     )
-"""
+
     create_environment(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],

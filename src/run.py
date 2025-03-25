@@ -3,6 +3,7 @@ import time
 import os
 from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential,ClientSecretCredential
+from datetime import datetime
 
 def create_client():
     # Explicitly get environment variables
@@ -38,7 +39,8 @@ if __name__ == "__main__":
     print("Running script1.py...")
     subprocess.run(["python", "src/resourcecreate.py"], check=True)
 
-    
+    print(f"{datetime.now()} - Waiting for 10 minutes before next script...")
+    time.sleep(600)
 
     print("All jobs completed! Running script2.py...")
     subprocess.run(["python", "src/runpipline.py"], check=True)
