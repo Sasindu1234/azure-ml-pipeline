@@ -5,8 +5,19 @@ from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
 
 def create_client():
-    # Initialize MLClient
-    credential = DefaultAzureCredential()
+    # Explicitly get environment variables
+    client_id = os.getenv("AZURE_CLIENT_ID")
+    tenant_id = os.getenv("AZURE_TENANT_ID")
+    client_secret = os.getenv("AZURE_CLIENT_SECRET")
+    
+    if not all([client_id, tenant_id, client_secret]):
+        raise ValueError("Missing required Azure credentials in environment variables")
+    
+    credential = DefaultAzureCredential(
+        additionally_allowed_tenants=["*"],  # Allows multi-tenant auth if needed
+        exclude_interactive_browser_credential=False  # Ensures only env vars are used
+    )
+    
     ml_client = MLClient(
         credential,
         subscription_id=os.getenv("SUBSCRIPTION_ID"),
