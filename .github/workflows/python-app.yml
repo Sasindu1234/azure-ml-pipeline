@@ -13,24 +13,15 @@ env:
   RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
   WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
   CONNECT_STR: ${{ secrets.CONNECT_STR }}
-  ACCOUNT_KEYVALUE: ${{ secrets.ACCOUNT_KEYVALUE }}
+  ACCOUNT_KEYVALUE : ${{ secrets.ACCOUNT_KEYVALUE }}
   LOCATION: ${{ secrets.LOCATION }}
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # Prevent hanging workflows
     
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Verify data files
-      run: |
-        if [ ! -d "data" ] || [ ! -f "data/query1.csv" ] || [ ! -f "data/query2.csv" ]; then
-          echo "::error::Missing required data files in data/"
-          ls -la
-          exit 1
-        fi
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -41,17 +32,8 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install azure-ai-ml azure-identity azure-storage-blob
+        pip install azure-ai-ml azure-identity
     
     - name: Run Azure ML Pipeline
-      working-directory: ./src
+      working-directory: ./src 
       run: python run.py
-      
-    - name: Upload logs on failure
-      if: failure()
-      uses: actions/upload-artifact@v3
-      with:
-        name: error-logs
-        path: |
-          **/*.log
-          **/debug*.txt
