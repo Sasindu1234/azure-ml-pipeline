@@ -146,8 +146,8 @@ if __name__ == "__main__":
         "container_names": ["rawdata", "preprodata", "result"],
         "tenant_ids": ["tenant1", "tenant2"],  # Update with your tenant IDs
         "local_file_paths": {
-            "query1.csv": "data/query1.csv",  # Update with your actual paths
-            "query2.csv": "data/query2.csv"
+            "query1.csv": "./data/query1.csv",  # Update with your actual paths
+            "query2.csv": "./data/query2.csv"
         },
         "account_keyvalue": os.getenv("ACCOUNT_KEYVALUE"),
         "countainer_namerun": "rawdata",
