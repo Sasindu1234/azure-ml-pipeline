@@ -79,6 +79,7 @@ def main():
             input_data2=input_data2,
             tenant_id=tenant_id
         )
+        
 
         clean_data.outputs.leave_type_clustering_data = Output(
             type="uri_folder",
