@@ -154,7 +154,7 @@ if __name__ == "__main__":
         },
         "account_keyvalue": os.getenv("ACCOUNT_KEYVALUE"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasidu1",
+        "compute_instance_name": "sasidu2",
         "compute_cluster_name" : "testone"
     }
 

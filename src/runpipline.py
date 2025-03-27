@@ -59,7 +59,7 @@ def main():
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "connect_str": os.getenv("CONNECT_STR"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasidu1",
+        "compute_instance_name": "sasidu2",
         "compute_cluster_name" : "testone"
     }
 
@@ -79,7 +79,7 @@ def main():
             input_data2=input_data2,
             tenant_id=tenant_id
         )
-        
+
 
         clean_data.outputs.leave_type_clustering_data = Output(
             type="uri_folder",
