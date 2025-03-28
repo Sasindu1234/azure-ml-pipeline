@@ -41,8 +41,7 @@ if __name__ == "__main__":
                 return False  
         return True
 
-    print(f"{datetime.now()} - Waiting for 10 minutes before next script...")
-    time.sleep(600)
+    
 
     print("All jobs completed! Running script2.py...")
     subprocess.run(["python", "src/runpipline.py"], check=True)
