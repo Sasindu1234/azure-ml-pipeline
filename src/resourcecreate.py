@@ -7,6 +7,7 @@ import json
 from azure.ai.ml.entities import AzureBlobDatastore
 from azure.ai.ml.entities import AccountKeyConfiguration
 from azure.ai.ml.entities import Environment
+from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.storage import StorageManagementClient
 import os
@@ -174,8 +175,37 @@ def create_environment(subscription_id, resource_group,workspace_name):
     )
 
     # Register the environment
-    ml_client.environments.create_or_update(env)
+    registered_env = ml_client.environments.create_or_update(env)
     print(f"Environment '{env_name} registered.")
+
+    # Poll for environment creation completion
+    max_retries = 30  # 30 retries * 10 seconds = 5 minutes max wait time
+    retry_count = 0
+    environment_ready = False
+
+    while not environment_ready and retry_count < max_retries:
+        try:
+            # Get the environment to check its status
+            env_status = ml_client.environments.get(name=env_name, version=registered_env.version)
+            
+            # If we get here, the environment exists and is ready
+            environment_ready = True
+            print(f"Environment '{env_name}' version {registered_env.version} is ready.")
+            
+        except ResourceNotFoundError:
+            # Environment not found yet
+            retry_count += 1
+            print(f"Waiting for environment to be ready... (attempt {retry_count}/{max_retries})")
+            time.sleep(10)  # Wait 10 seconds before checking again
+            
+        except Exception as e:
+            print(f"Error checking environment status: {str(e)}")
+            raise
+
+    if not environment_ready:
+        raise TimeoutError(f"Environment '{env_name}' was not ready after {max_retries} attempts.")
+
+    return registered_env
 
 # Example usage
 if __name__ == "__main__":
