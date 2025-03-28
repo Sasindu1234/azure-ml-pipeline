@@ -59,7 +59,7 @@ def main():
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "connect_str": os.getenv("CONNECT_STR"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu5",
+        "compute_instance_name": "sasindu6",
         "compute_cluster_name" : "testone"
     }
 
@@ -146,6 +146,7 @@ def main():
         )
         print(f"Submitted job for tenant {tenant_id}: {submitted_job.name}")
 
-
+    return submitted_job.name 
 if __name__ == "__main__":
-    main()
+    job_names = main()
+    print("Submitted jobs:", job_names)

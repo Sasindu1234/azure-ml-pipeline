@@ -7,8 +7,53 @@ import json
 from azure.ai.ml.entities import AzureBlobDatastore
 from azure.ai.ml.entities import AccountKeyConfiguration
 from azure.ai.ml.entities import Environment
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.storage import StorageManagementClient
 import os
+import time
 
+def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource_group,storage_account_name,location="eastus"):
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    resource_client = ResourceManagementClient(credential, subscription_id)
+    storage_client = StorageManagementClient(credential, subscription_id)
+    
+    resource_client.resource_groups.create_or_update(
+        resource_group,
+        {"location": location}
+    )
+
+    storage_account = storage_client.storage_accounts.begin_create(
+        resource_group,
+        storage_account_name,
+        {
+            "sku": {"name": "Standard_LRS"},
+            "kind": "StorageV2",
+            "location": location,
+            "enable_https_traffic_only": True,
+            "minimum_tls_version": "TLS1_2"
+        }
+    ).result()
+    print(f"Storage account created: {storage_account.name}")
+    keys = storage_client.storage_accounts.list_keys(
+        resource_group, 
+        storage_account_name
+    )
+    
+    connection_string = (
+        f"DefaultEndpointsProtocol=https;"
+        f"AccountName={storage_account_name};"
+        f"AccountKey={keys.keys[0].value};"
+        f"EndpointSuffix=core.windows.net"
+    )
+
+    return {
+        "account_name": storage_account_name,
+        "primary_key": keys.keys[0].value,
+        "connection_string": connection_string
+    }
+
+    pass
+    
 
 
 def create_ml_resources(subscription_id, resource_group,workspace_name,compute_instance_name,compute_cluster_name,TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
@@ -132,8 +177,6 @@ def create_environment(subscription_id, resource_group,workspace_name):
     ml_client.environments.create_or_update(env)
     print(f"Environment '{env_name} registered.")
 
-
-
 # Example usage
 if __name__ == "__main__":
     # Load configuration from config.json
@@ -154,7 +197,7 @@ if __name__ == "__main__":
         },
         "account_keyvalue": os.getenv("ACCOUNT_KEYVALUE"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu5",
+        "compute_instance_name": "sasindu6",
         "compute_cluster_name" : "testone"
     }
 

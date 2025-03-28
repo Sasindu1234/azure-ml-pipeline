@@ -2,45 +2,52 @@ import subprocess
 import time
 import os
 from azure.ai.ml import MLClient
-from azure.identity import DefaultAzureCredential,ClientSecretCredential
-from datetime import datetime
+from azure.identity import ClientSecretCredential
 
 def create_client():
-    # Explicitly get environment variables
-    client_id = os.getenv("AZURE_CLIENT_ID")
-    tenant_id = os.getenv("AZURE_TENANT_ID")
-    client_secret = os.getenv("AZURE_CLIENT_SECRET")
-    
-    if not all([client_id, tenant_id, client_secret]):
-        raise ValueError("Missing required Azure credentials in environment variables")
-    
-    credential = ClientSecretCredential( tenant_id, client_id,client_secret)
-    
-    ml_client = MLClient(
+    credential = ClientSecretCredential(
+        tenant_id=os.getenv("AZURE_TENANT_ID"),
+        client_id=os.getenv("AZURE_CLIENT_ID"),
+        client_secret=os.getenv("AZURE_CLIENT_SECRET")
+    )
+    return MLClient(
         credential,
         subscription_id=os.getenv("SUBSCRIPTION_ID"),
         resource_group=os.getenv("RESOURCE_GROUP"),
         workspace_name=os.getenv("WORKSPACE_NAME")
     )
-    return ml_client
 
-ml_client = create_client()
-
-def all_jobs_completed():
-    """Check if all Azure ML jobs are completed."""
-    jobs = list(ml_client.jobs.list()) 
-    for job in jobs:
-        print(f"Job Name: {job.name}, Status: {job.status}")
-        if job.status not in ["Completed", "Failed", "Canceled"]:
-            return False  
-    return True  
+def check_environment_ready(ml_client, env_name="clustertestingenvironment", timeout=600):
+    """Check if environment is successfully created"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            env = ml_client.environments.get(env_name, label="latest")
+            if env:
+                print(f"Environment '{env_name}' is ready")
+                return True
+        except Exception as e:
+            print(f"Environment not ready yet: {str(e)}")
+        time.sleep(30)
+    return False
 
 if __name__ == "__main__":
-    print("Running script1.py...")
+    # Step 1: Run resource creation and verify completion
+    print("Creating resources...")
     subprocess.run(["python", "src/resourcecreate.py"], check=True)
-
-    print(f"{datetime.now()} - Waiting for 10 minutes before next script...")
-    time.sleep(600)
-
-    print("All jobs completed! Running script2.py...")
-    subprocess.run(["python", "src/runpipline.py"], check=True)
+    
+    # Step 2: Verify environment is ready
+    print("Verifying environment...")
+    ml_client = create_client()
+    if not check_environment_ready(ml_client):
+        raise RuntimeError("Environment creation failed or timed out")
+    
+    # Step 3: Run pipeline only after verification
+    print("Running pipeline...")
+    pipeline_process = subprocess.run(
+        ["python", "src/runpipline.py"],
+        check=True,
+        capture_output=True,
+        text=True
+    )
+    print("Pipeline execution completed")
