@@ -17,10 +17,6 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
     resource_client = ResourceManagementClient(credential, subscription_id)
     storage_client = StorageManagementClient(credential, subscription_id)
     
-    resource_client.resource_groups.create_or_update(
-        resource_group,
-        {"location": location}
-    )
 
     storage_account = storage_client.storage_accounts.begin_create(
         resource_group,
