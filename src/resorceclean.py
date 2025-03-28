@@ -33,7 +33,7 @@ if __name__ == "__main__":
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "storage_account_name" : os.getenv("STORAGE_NAME"),
-        "compute_instance_name": "sasindu11",
+        "compute_instance_name": "sasindu12",
        
     }
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         CLIENT_ID = config["CLIENT_ID"],
         CLIENT_SECRET = config["CLIENT_SECRET"],
         subscription_id=config["subscription_id"],
-        resource_group=config["resource_group"],
+        resource_group_name=config["resource_group"],
         workspace_name= config["workspace_name"], 
         compute_name = config["compute_instance_name"]
         
