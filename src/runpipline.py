@@ -59,7 +59,7 @@ def main():
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "connect_str": os.getenv("CONNECT_STR"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu6",
+        "compute_instance_name": "sasindu7",
         "compute_cluster_name" : "testone"
     }
 
