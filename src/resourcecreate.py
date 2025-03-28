@@ -183,13 +183,13 @@ if __name__ == "__main__":
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "location": os.getenv("LOCATION"),
+        "storage_account_name" : os.getenv("STORAGE_NAME"),
         "container_names": ["rawdata", "preprodata", "result"],
         "tenant_ids": ["tenant1", "tenant2"],  # Update with your tenant IDs
         "local_file_paths": {
             "query1.csv": "data/query1.csv",  # Update with your actual paths
             "query2.csv": "data/query2.csv"
         },
-        "storage_account_name" : os.getenv("STORAGE_NAME"),
         "countainer_namerun": "rawdata",
         "compute_instance_name": "sasindu6",
         "compute_cluster_name" : "testone"
