@@ -189,7 +189,7 @@ if __name__ == "__main__":
             "query1.csv": "data/query1.csv",  # Update with your actual paths
             "query2.csv": "data/query2.csv"
         },
-        "storage_account_name" : os.getenv("storage_name"),
+        "storage_account_name" : os.getenv("STORAGE_NAME"),
         "countainer_namerun": "rawdata",
         "compute_instance_name": "sasindu6",
         "compute_cluster_name" : "testone"
