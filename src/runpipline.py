@@ -146,6 +146,18 @@ def main():
         )
         print(f"Submitted job for tenant {tenant_id}: {submitted_job.name}")
 
+        # Wait for completion with timeout (in seconds)
+        completed_job = pipeline_job.wait(timeout=3600)  # 1 hour timeout
+
+        # Check status
+        if completed_job.status == "Completed":
+            print("Pipeline succeeded! Running next script...")
+            # Execute your next script here
+            # subprocess.run(["python", "next_script.py"])
+        else:
+            print(f"Pipeline failed with status: {completed_job.status}")
+            # Handle failure case
+
     return submitted_job.name 
 if __name__ == "__main__":
     job_names = main()

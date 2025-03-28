@@ -41,8 +41,9 @@ if __name__ == "__main__":
                 return False  
         return True
 
-    print(f"{datetime.now()} - Waiting for 10 minutes before next script...")
-    time.sleep(600)
+    print("Waiting for all Azure ML jobs to complete...")
+    while not all_jobs_completed():
+        time.sleep(60) 
 
     print("All jobs completed! Running script2.py...")
     subprocess.run(["python", "src/runpipline.py"], check=True)

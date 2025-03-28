@@ -207,7 +207,7 @@ if __name__ == "__main__":
     print(f"Creating ML resources for workspace '{workspace_name}'...")
     # Call functions with configuration values
     
-    
+    '''
     create_ml_resources(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
@@ -219,7 +219,7 @@ if __name__ == "__main__":
         CLIENT_SECRET = config["CLIENT_SECRET"],
         location=config["location"],
     )
-
+    '''
 
     create_containers_and_upload_files(
         connect_str=config["connect_str"],
