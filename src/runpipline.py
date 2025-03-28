@@ -142,7 +142,12 @@ def main():
 
     # Create tenant folders
     tenant_data_paths = create_tenant_folders(
-        connect_str = config["connect_str"], 
+         TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group=config["resource_group"],
+        storage_account_name = config["storage_account_name"],
         container_name = config["countainer_namerun"])
 
     # Loop through each tenant and submit pipeline jobs
