@@ -169,19 +169,17 @@ def main():
         )
         print(f"Submitted job for tenant {tenant_id}: {submitted_job.name}")
 
-        # Wait for completion with timeout (in seconds)
-        completed_job = pipeline_job.wait(timeout=3600)  # 1 hour timeout
+       # Stream logs and wait for completion
+        ml_client.jobs.stream(submitted_job.name)
 
-        # Check status
-        if completed_job.status == "Completed":
+        # Get final status
+        final_job = ml_client.jobs.get(submitted_job.name)
+        if final_job.status == "Completed":
             print("Pipeline succeeded! Running next script...")
-            # Execute your next script here
-            # subprocess.run(["python", "next_script.py"])
         else:
-            print(f"Pipeline failed with status: {completed_job.status}")
-            # Handle failure case
+            print(f"Pipeline failed with status: {final_job.status}")
 
-    return submitted_job.name 
+            return submitted_job.name 
 if __name__ == "__main__":
     job_names = main()
     print("Submitted jobs:", job_names)
