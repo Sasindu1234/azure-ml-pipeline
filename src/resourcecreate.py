@@ -46,13 +46,10 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
         f"EndpointSuffix=core.windows.net"
     )
 
-    return {
-        "account_name": storage_account_name,
-        "primary_key": keys.keys[0].value,
-        "connection_string": connection_string
-    }
+    return  keys.keys[0].value,connection_string
+   
 
-    pass
+    
     
 
 
@@ -113,7 +110,7 @@ def create_containers_and_upload_files(connect_str, container_names, tenant_ids,
 
 
 
-def create_datastore(subscription_id, resource_group, account_keyvalue,workspace_name):
+def create_datastore(subscription_id, resource_group, account_keyvalue,storage_account_name, workspace_name):
     
     
     credential = DefaultAzureCredential()
@@ -122,7 +119,7 @@ def create_datastore(subscription_id, resource_group, account_keyvalue,workspace
     store = AzureBlobDatastore(
     name="raw_data",
     description="Datastore created with rawdata container",
-    account_name="leaveblob",
+    account_name=storage_account_name,
     container_name="rawdata",
     protocol="https",
     credentials=AccountKeyConfiguration(
@@ -133,7 +130,7 @@ def create_datastore(subscription_id, resource_group, account_keyvalue,workspace
     store = AzureBlobDatastore(
     name="result_store",
     description="Datastore created with rawdata result",
-    account_name="leaveblob",
+    account_name=storage_account_name,
     container_name="result",
     protocol="https",
     credentials=AccountKeyConfiguration(
@@ -146,7 +143,7 @@ def create_datastore(subscription_id, resource_group, account_keyvalue,workspace
     store = AzureBlobDatastore(
         name="pre_prodata",
         description="Datastore created with preprodata container",
-        account_name="leaveblob",
+        account_name=storage_account_name,
         container_name="preprodata",
         protocol="https",
         credentials=AccountKeyConfiguration(
@@ -190,30 +187,33 @@ if __name__ == "__main__":
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "location": os.getenv("LOCATION"),
-        "connect_str": os.getenv("CONNECT_STR"),
         "container_names": ["rawdata", "preprodata", "result"],
         "tenant_ids": ["tenant1", "tenant2"],  # Update with your tenant IDs
         "local_file_paths": {
             "query1.csv": "data/query1.csv",  # Update with your actual paths
             "query2.csv": "data/query2.csv"
         },
-        "account_keyvalue": os.getenv("ACCOUNT_KEYVALUE"),
+        "storage_account_name" : os.getenv("storage_name"),
         "countainer_namerun": "rawdata",
         "compute_instance_name": "sasindu6",
         "compute_cluster_name" : "testone"
     }
 
-    workspace_name = config["workspace_name"] 
-
-        # Call functions with configuration values
-    print(f"Creating ML resources for workspace '{workspace_name}'...")
-    # Call functions with configuration values
     
+    
+    account_keyvalue ,connect_str = create_storage(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group=config["resource_group"],
+        storage_account_name = config["storage_account_name"],
+        location=config["location"])
     
     create_ml_resources(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
-        workspace_name= workspace_name,
+        workspace_name= config["workspace_name"] ,
         compute_instance_name = config["compute_instance_name"],
         compute_cluster_name = config["compute_cluster_name"],
         TENANT_ID = config["TENANT_ID"],
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     
 
     create_containers_and_upload_files(
-        connect_str=config["connect_str"],
+        connect_str=connect_str,
         container_names=config["container_names"],
         tenant_ids=config["tenant_ids"],
         local_file_paths=config["local_file_paths"],
@@ -233,12 +233,13 @@ if __name__ == "__main__":
     create_datastore(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
-        account_keyvalue=config["account_keyvalue"],
-        workspace_name= workspace_name
+        storage_account_name = config["storage_account_name"],
+        account_keyvalue= account_keyvalue,
+        workspace_name= config["workspace_name"] 
     )
 
     create_environment(
         subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
-        workspace_name= workspace_name
+        workspace_name= config["workspace_name"] 
     )

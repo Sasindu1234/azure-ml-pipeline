@@ -27,19 +27,14 @@ def create_client():
   
 
 if __name__ == "__main__":
+
+    ml_client = create_client()
     print("Running script1.py...")
     subprocess.run(["python", "src/resourcecreate.py"], check=True)
 
-    ml_client = create_client()
+    
 
-    def all_jobs_completed():
-        """Check if all Azure ML jobs are completed."""
-        jobs = list(ml_client.jobs.list()) 
-        for job in jobs:
-            print(f"Job Name: {job.name}, Status: {job.status}")
-            if job.status not in ["Completed", "Failed", "Canceled"]:
-                return False  
-        return True
+    
 
     
 
