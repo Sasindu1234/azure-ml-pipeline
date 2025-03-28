@@ -195,13 +195,7 @@ if __name__ == "__main__":
         "compute_cluster_name" : "testone"
     }
 
-    print("Loaded configuration:")
-    for key, value in config.items():
-        print(f"{key}: {value if key != 'CLIENT_SECRET' else '*****'}")
-
-    # Verify critical values are not None or empty
-    if not config["storage_account_name"]:
-        raise ValueError("STORAGE_NAME environment variable is not set or empty")
+    
     
     account_keyvalue ,connect_str = create_storage(
         TENANT_ID = config["TENANT_ID"],

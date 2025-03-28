@@ -12,9 +12,8 @@ env:
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
   WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
-  CONNECT_STR: ${{ secrets.CONNECT_STR }}
-  ACCOUNT_KEYVALUE : ${{ secrets.ACCOUNT_KEYVALUE }}
   LOCATION: ${{ secrets.LOCATION }}
+  STORAGE_NAME: ${{ secrets.STORAGE_NAME}}
 
 jobs:
   run-pipeline:
