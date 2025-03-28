@@ -1,4 +1,4 @@
-from azure.identity import DefaultAzureCredential, InteractiveBrowserCredential
+from azure.identity import DefaultAzureCredential,ClientSecretCredential
 from azure.storage.blob import BlobServiceClient
 from azure.ai.ml import Input, Output
 from azure.ai.ml.constants import AssetTypes
@@ -9,6 +9,8 @@ from azure.ai.ml.entities import AccountKeyConfiguration
 from azure.ai.ml import load_component as load_component_from_yaml
 import json
 import os
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.storage import StorageManagementClient
 
 def create_client(subscription_id, resource_group, workspace_name):
     # Initialize MLClient
@@ -23,9 +25,22 @@ def load_components():
     return prep_data, cluster_training
 
 
-def create_tenant_folders(connect_str, container_name):
-    # Initialize BlobServiceClient and ContainerClient
-    blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+def create_tenant_folders(TENANT_ID, CLIENT_ID, CLIENT_SECRET,storage_account_name, resource_group, subscription_id, container_name):
+
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    storage_client = StorageManagementClient(credential, subscription_id)
+
+    keys = storage_client.storage_accounts.list_keys(
+        resource_group, 
+        storage_account_name
+    )
+    connection_string = (
+        f"DefaultEndpointsProtocol=https;"
+        f"AccountName={storage_account_name};"
+        f"AccountKey={keys.keys[0].value};"
+        f"EndpointSuffix=core.windows.net"
+    )
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(container_name)
     tenant_folders = set()
     tenant_data_paths = {}
@@ -54,10 +69,13 @@ def main():
     
    
     config = {
+        "TENANT_ID" : os.getenv("AZURE_TENANT_ID"),
+        "CLIENT_ID" : os.getenv("AZURE_CLIENT_ID"),
+        "CLIENT_SECRET" : os.getenv("AZURE_CLIENT_SECRET"),
         "subscription_id": os.getenv("SUBSCRIPTION_ID"),
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
-        "connect_str": os.getenv("CONNECT_STR"),
+        "storage_account_name" : os.getenv("STORAGE_NAME"),
         "countainer_namerun": "rawdata",
         "compute_instance_name": "sasindu7",
         "compute_cluster_name" : "testone"
