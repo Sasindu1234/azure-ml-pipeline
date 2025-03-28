@@ -166,7 +166,7 @@ def create_environment(subscription_id, resource_group,workspace_name):
 
 
     # Define the environment
-    env_name = "clustertestingenvironment"
+    env_name = "clustertestingenvironments"
     env = Environment(
         image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04",
         name=env_name,
