@@ -196,7 +196,7 @@ if __name__ == "__main__":
     }
 
     
-    
+    print(config["storage_account_name"])
     account_keyvalue ,connect_str = create_storage(
         TENANT_ID = config["TENANT_ID"],
         CLIENT_ID = config["CLIENT_ID"],
