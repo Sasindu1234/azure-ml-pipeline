@@ -33,7 +33,7 @@ if __name__ == "__main__":
         "resource_group": os.getenv("RESOURCE_GROUP"),
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "storage_account_name" : os.getenv("STORAGE_NAME"),
-        "compute_instance_name": "sasindu12",
+        "compute_instance_name": "sasindu13",
        
     }
 
