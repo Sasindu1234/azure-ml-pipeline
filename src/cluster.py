@@ -31,7 +31,7 @@ def process_clusters(data, year):
     deep_clusters["Year"] = year
     
     # Return the relevant columns
-    return deep_clusters[['EmployeeCode', 'Level1', 'Level2', 'Level3', 'Year', 'SilhouteScore', 'SilhouteScore2', 'SilhouteScore3']]
+    return deep_clusters[['EmployeeCode', 'Pattern','Level1', 'Level2', 'Level3', 'Year', 'SilhouteScore', 'SilhouteScore2', 'SilhouteScore3']]
 
 
 def Clusterscaling(Data):
@@ -106,8 +106,8 @@ def DeepCluster(Clusters, Data):
         return pd.DataFrame({
             'EmployeeCode': Data['EmployeeCode'],
             'Level1': "1",
-            'Level2': "1.1",
-            'Level3': "1.1.1",
+            'Level2': "1",
+            'Level3': "1",
             'SilhouteScore': process_silhoute_score(Data)
         })
 
@@ -138,7 +138,7 @@ def DeepCluster(Clusters, Data):
         if isinstance(Level2, str):  # No further clustering
             tempData = pd.DataFrame({
                 'EmployeeCode': cluster_data['EmployeeCode'],
-                'Level2': f"{level1_dict[cluster]}.1",
+                'Level2': "1",
                 'SilhouteScore2': 0
                 
             })
@@ -149,7 +149,7 @@ def DeepCluster(Clusters, Data):
             for sub_idx, (sub_cluster, sub_data) in enumerate(tempExtract.items(), start=1):
                 tempDf = pd.DataFrame({
                     'EmployeeCode': sub_data['EmployeeCode'],
-                    'Level2': f"{level1_dict[cluster]}.{sub_idx}",
+                    'Level2': str(sub_idx),
                     'SilhouteScore2': Level2[1]
                 })
                 tempDataList.append(tempDf)
@@ -171,7 +171,7 @@ def DeepCluster(Clusters, Data):
         if isinstance(Level3, str):
             tempData = pd.DataFrame({
                 'EmployeeCode': cluster_data['EmployeeCode'],
-                'Level3': f"{treeTable.loc[treeTable['EmployeeCode'].isin(cluster_data['EmployeeCode']), 'Level2'].values[0]}.1",
+                'Level3': "1",
                 'SilhouteScore3': 0
             })
         else:
@@ -181,7 +181,7 @@ def DeepCluster(Clusters, Data):
                 parent_level2 = treeTable.loc[treeTable['EmployeeCode'].isin(sub_data['EmployeeCode']), 'Level2'].values[0]
                 tempDf = pd.DataFrame({
                     'EmployeeCode': sub_data['EmployeeCode'],
-                    'Level3': f"{parent_level2}.{sub_idx}",
+                    'Level3': str(sub_idx),
                     'SilhouteScore3': Level3[1]
                 })
                 tempDataList.append(tempDf)
@@ -190,8 +190,28 @@ def DeepCluster(Clusters, Data):
         level3Clust = pd.concat([level3Clust, tempData], ignore_index=True)
 
     treeTable = treeTable.merge(level3Clust, on='EmployeeCode', how='left')
+    # Add the pattern numbering system here
+    treeTable['Order'] = (treeTable.Level1.astype(str) + 
+                         treeTable.Level2.astype(str) + 
+                         treeTable.Level3.astype(str)).astype(int)
+    
+    # Get unique patterns and assign sequential numbers
+    Patterns = np.sort(treeTable['Order'].unique())
+    order_mapping = pd.DataFrame({
+        'Order': Patterns,
+        'Pattern': np.arange(1, len(Patterns) + 1 ) # Start numbering from 1
+    })
+    
+    # Merge the pattern numbers back to the main table
+    treeTable = treeTable.merge(order_mapping, on='Order', how='left')
+    
+    
+    
+    
 
     return treeTable
+
+
 
 
 def save_clusters_combined(clusters_without_year, clusters_by_year, file_prefix, tenant_id, base_folder="results"):
