@@ -318,6 +318,38 @@ def pipline(ml_client,tenant_data_paths,compute_instance_name):
             print(f"Pipeline failed with status: {final_job.status}")
 
             return submitted_job.name 
+        
+def delete_data_store(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name,workspace_name,datastore_names):
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    ml_client = MLClient(credential, subscription_id, resource_group_name, workspace_name)
+
+    for datastore_name in datastore_names:
+        try:
+            ml_client.datastores.delete(datastore_name)
+            print(f"Successfully deleted datastore: {datastore_name}")
+        except Exception as e:
+            print(f"Error deleting datastore {datastore_name}: {str(e)}")
+
+
+def delete_storage_account(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name, storage_account_name):
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    storage_client = StorageManagementClient(credential, subscription_id)
+    
+    print(f"Deleting storage account: {storage_account_name}...")
+    storage_client.storage_accounts.delete(resource_group_name, storage_account_name)
+    print("Storage account deleted successfully")
+
+
+
+
+def delete_compute_cluster(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name, workspace_name, compute_name):
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    ml_client = MLClient(credential, subscription_id, resource_group_name, workspace_name)
+    
+    print(f"Deleting compute cluster: {compute_name}...")
+    ml_client.compute.begin_delete(compute_name).wait()
+    print("Compute cluster deleted successfully")
+
 
 # Example usage
 if __name__ == "__main__":
@@ -408,4 +440,38 @@ if __name__ == "__main__":
     
     job_names = pipline(ml_client,tenant_data_paths,config["compute_instance_name"])
     print("Submitted jobs:", job_names)
+
+    
+    print("Waiting for 3 minutes before cleanup...")
+    time.sleep(180)
+    
+    delete_data_store(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group_name=config["resource_group"],
+        workspace_name= config["workspace_name"],
+        datastore_names = config["datastore_names"]
+    )
+    
+    delete_storage_account(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group_name=config["resource_group"],
+        storage_account_name = config["storage_account_name"]
+    )
+  
+    delete_compute_cluster(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group_name=config["resource_group"],
+        workspace_name= config["workspace_name"], 
+        compute_name = config["compute_instance_name"]
+        
+    )
     
