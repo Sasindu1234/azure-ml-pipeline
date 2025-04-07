@@ -230,32 +230,9 @@ def create_tenant_folders(TENANT_ID, CLIENT_ID, CLIENT_SECRET,storage_account_na
         }
     return tenant_data_paths
 
-def pipline():
+def pipline(ml_client,tenant_data_paths,compute_instance_name):
     # Define variables
     
-   
-    config = {
-        "TENANT_ID" : os.getenv("AZURE_TENANT_ID"),
-        "CLIENT_ID" : os.getenv("AZURE_CLIENT_ID"),
-        "CLIENT_SECRET" : os.getenv("AZURE_CLIENT_SECRET"),
-        "subscription_id": os.getenv("SUBSCRIPTION_ID"),
-        "resource_group": os.getenv("RESOURCE_GROUP"),
-        "workspace_name": os.getenv("WORKSPACE_NAME"),
-        "storage_account_name" : os.getenv("STORAGE_NAME"),
-        "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu14",
-        "compute_cluster_name" : "testone"
-    }
-
-    # Create client
-    ml_client = create_client(
-        TENANT_ID = config["TENANT_ID"],
-        CLIENT_ID = config["CLIENT_ID"],
-        CLIENT_SECRET = config["CLIENT_SECRET"],
-        subscription_id=config["subscription_id"],
-        resource_group=config["resource_group"],
-        workspace_name= config["workspace_name"])
-
     # Load components
     prep_data, cluster_training = load_components()
     
@@ -310,16 +287,7 @@ def pipline():
             "clustered_results": train_model.outputs.clustered_results,
         }
 
-    # Create tenant folders
-    tenant_data_paths = create_tenant_folders(
-         TENANT_ID = config["TENANT_ID"],
-        CLIENT_ID = config["CLIENT_ID"],
-        CLIENT_SECRET = config["CLIENT_SECRET"],
-        subscription_id=config["subscription_id"],
-        resource_group=config["resource_group"],
-        storage_account_name = config["storage_account_name"],
-        container_name = config["countainer_namerun"])
-
+    
     # Loop through each tenant and submit pipeline jobs
     for tenant_id, paths in tenant_data_paths.items():
         # Create pipeline job for the tenant
@@ -330,7 +298,7 @@ def pipline():
         )
 
         # Set pipeline-level compute and datastore
-        pipeline_job.settings.default_compute = config["compute_instance_name"]
+        pipeline_job.settings.default_compute = compute_instance_name
         pipeline_job.settings.default_datastore = "workspaceblobstore"
 
         # Submit the pipeline job to the workspace
@@ -374,7 +342,6 @@ if __name__ == "__main__":
         "compute_cluster_name" : "testone"
     }
 
-    
     print(config["storage_account_name"])
     account_keyvalue ,connect_str = create_storage(
         TENANT_ID = config["TENANT_ID"],
@@ -418,7 +385,27 @@ if __name__ == "__main__":
         resource_group=config["resource_group"],
         workspace_name= config["workspace_name"] 
     )
+
+    # Create client
+    ml_client = create_client(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group=config["resource_group"],
+        workspace_name= config["workspace_name"])
     
-    job_names = pipline()
+    # Create tenant folders
+    tenant_data_paths = create_tenant_folders(
+         TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
+        resource_group=config["resource_group"],
+        storage_account_name = config["storage_account_name"],
+        container_name = config["countainer_namerun"])
+
+    
+    job_names = pipline(ml_client,tenant_data_paths,config["compute_instance_name"])
     print("Submitted jobs:", job_names)
     
