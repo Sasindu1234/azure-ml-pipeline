@@ -33,7 +33,17 @@ jobs:
         pip install -r requirements.txt
         pip install azure-ai-ml azure-identity
     
-    - name: ML Pipline run
-      run: python src/mainpipline.py
+    - name: ML resource create
+      run: python src/resourcecreate.py
     
-   
+    - name: Wait 7 minutes
+      run: sleep 0 
+
+    - name: Data preprocess and clustering
+      run: python src/runpipline.py
+
+    - name: Wait 7 minutes
+      run: sleep 60 
+
+    - name: Run Delete resource
+      run: python src/resorceclean.py
