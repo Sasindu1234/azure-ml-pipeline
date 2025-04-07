@@ -164,6 +164,8 @@ def main():
         )
 
         # Set pipeline-level compute and datastore
+        compute_instance = ml_client.compute.get(config["compute_instance_name"])
+        print(f"Compute instance identity: {compute_instance.identity}")
         pipeline_job.settings.default_compute = config["compute_instance_name"]
         pipeline_job.settings.default_datastore = "workspaceblobstore"
 
