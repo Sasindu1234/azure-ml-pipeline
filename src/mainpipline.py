@@ -1,6 +1,6 @@
 from azure.identity import DefaultAzureCredential,ClientSecretCredential
 from azure.ai.ml import MLClient
-from azure.ai.ml.entities import Workspace, ComputeInstance, AmlCompute
+from azure.ai.ml.entities import ComputeInstance, AmlCompute
 from azure.storage.blob import BlobServiceClient
 from azure.ai.ml.entities import AzureBlobDatastore
 from azure.ai.ml.entities import AccountKeyConfiguration
@@ -13,8 +13,6 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.storage import StorageManagementClient
 import os
 import time
-import json
-import datetime
 
 def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource_group,storage_account_name,location="eastus"):
     credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
@@ -371,8 +369,10 @@ if __name__ == "__main__":
         },
         "countainer_namerun": "rawdata",
         "compute_instance_name": "sasindu1",
-        "compute_cluster_name" : "testone"
+        "compute_cluster_name" : "testone",
+        "datastore_names": ["raw_data", "pre_prodata", "result_store"]
     }
+
 
     print(config["storage_account_name"])
     account_keyvalue ,connect_str = create_storage(
@@ -444,7 +444,7 @@ if __name__ == "__main__":
     
     print("Waiting for 3 minutes before cleanup...")
     time.sleep(180)
-    
+
     delete_data_store(
         TENANT_ID = config["TENANT_ID"],
         CLIENT_ID = config["CLIENT_ID"],
