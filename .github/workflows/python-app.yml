@@ -37,13 +37,13 @@ jobs:
       run: python src/resourcecreate.py
     
     - name: Wait 7 minutes
-      run: sleep 420 
+      run: sleep 0 
 
     - name: Data preprocess and clustering
       run: python src/runpipline.py
 
     - name: Wait 7 minutes
-      run: sleep 420 
+      run: sleep 60 
 
     - name: Run Delete resource
       run: python src/resorceclean.py
