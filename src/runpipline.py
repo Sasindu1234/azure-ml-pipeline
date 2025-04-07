@@ -12,9 +12,9 @@ import os
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.storage import StorageManagementClient
 
-def create_client(subscription_id, resource_group, workspace_name):
+def create_client(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource_group, workspace_name):
     # Initialize MLClient
-    credential = DefaultAzureCredential()
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
     return ml_client
 
@@ -82,7 +82,11 @@ def main():
     }
 
     # Create client
-    ml_client = create_client(subscription_id=config["subscription_id"],
+    ml_client = create_client(
+        TENANT_ID = config["TENANT_ID"],
+        CLIENT_ID = config["CLIENT_ID"],
+        CLIENT_SECRET = config["CLIENT_SECRET"],
+        subscription_id=config["subscription_id"],
         resource_group=config["resource_group"],
         workspace_name= config["workspace_name"])
 
