@@ -18,27 +18,22 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
     storage_client = StorageManagementClient(credential, subscription_id)
     
 
-    try:
-        storage_account = storage_client.storage_accounts.get_properties(resource_group, storage_account_name)
-        print(f"Storage account '{storage_account_name}' already exists.")
-    except:
-        # Create storage account if it doesn't exist
-        print(f"Creating storage account '{storage_account_name}'...")
-        storage_account = storage_client.storage_accounts.begin_create(
-            resource_group,
-            storage_account_name,
-            {
-                "sku": {"name": "Standard_LRS"},
-                "kind": "StorageV2",
-                "location": location,
-                "enable_https_traffic_only": True,
-                "minimum_tls_version": "TLS1_2"
-            }
-        ).result()
-        print(f"Storage account created: {storage_account.name}")
-    
-    # Get keys for the storage account
-    keys = storage_client.storage_accounts.list_keys(resource_group, storage_account_name)
+    storage_account = storage_client.storage_accounts.begin_create(
+        resource_group,
+        storage_account_name,
+        {
+            "sku": {"name": "Standard_LRS"},
+            "kind": "StorageV2",
+            "location": location,
+            "enable_https_traffic_only": True,
+            "minimum_tls_version": "TLS1_2"
+        }
+    ).result()
+    print(f"Storage account created: {storage_account.name}")
+    keys = storage_client.storage_accounts.list_keys(
+        resource_group, 
+        storage_account_name
+    )
     
     connection_string = (
         f"DefaultEndpointsProtocol=https;"
@@ -47,45 +42,41 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
         f"EndpointSuffix=core.windows.net"
     )
 
-    return keys.keys[0].value, connection_string
+    return  keys.keys[0].value,connection_string
    
 
     
     
 
 
-def create_ml_resources(subscription_id, resource_group, workspace_name, compute_instance_name, compute_cluster_name, TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
+def create_ml_resources(subscription_id, resource_group,workspace_name,compute_instance_name,compute_cluster_name,TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
+    # Initialize MLClient
     credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
+
+    # Create compute instance
     
-    # Check and create compute instance
-    try:
-        compute_instance = ml_client.compute.get(compute_instance_name)
-        print(f"Compute instance '{compute_instance_name}' already exists.")
-    except:
-        compute_instance = ComputeInstance(
-            name=compute_instance_name,
-            size="Standard_E4ds_v4",
-        )
-        ml_client.begin_create_or_update(compute_instance).result()
-        print(f"Compute instance '{compute_instance_name}' created.")
-    
-    # Check and create compute cluster
-    try:
-        compute_cluster = ml_client.compute.get(compute_cluster_name)
-        print(f"Compute cluster '{compute_cluster_name}' already exists.")
-    except:
-        compute_cluster = AmlCompute(
-            name=compute_cluster_name,
-            type="amlcompute",
-            size="Standard_D4s_v3",
-            location=location,
-            min_instances=0,
-            max_instances=1,
-            idle_time_before_scale_down=60,
-        )
-        ml_client.begin_create_or_update(compute_cluster).result()
-        print(f"Compute cluster '{compute_cluster_name}' created.")
+    compute_instance = ComputeInstance(
+        name=compute_instance_name,
+        size="Standard_E4ds_v4",
+    )
+    ml_client.begin_create_or_update(compute_instance).result()
+    print(f"Compute instance '{compute_instance_name}' created.")
+
+    # Create AML compute cluster
+   
+    compute_cluster = AmlCompute(
+        name=compute_cluster_name,
+        type="amlcompute",
+        size="Standard_D4s_v3",
+        location=location,
+        min_instances=0,
+        max_instances=1,
+        idle_time_before_scale_down=60,
+    )
+    ml_client.begin_create_or_update(compute_cluster).result()
+    print(f"Compute cluster '{compute_cluster_name}' created.")
 
     
 
@@ -159,24 +150,27 @@ def create_datastore(subscription_id, resource_group, account_keyvalue,storage_a
     ml_client.create_or_update(store)
 
 
-def create_environment(subscription_id, resource_group, workspace_name):
+def create_environment(subscription_id, resource_group,workspace_name):
+
+    
     credential = DefaultAzureCredential()
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
-    
+
+
+    # Define the environment
     env_name = "clustertestingenvironment"
+    env = Environment(
+        image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04",
+        name=env_name,
+        conda_file="conda.yaml",
+        description="Environment for clustering testing",
+    )
+
+    # Register the environment
+    ml_client.environments.create_or_update(env)
+    print(f"Environment '{env_name} registered.")
+
     
-    try:
-        existing_env = ml_client.environments.get(env_name, label="latest")
-        print(f"Environment '{env_name}' already exists.")
-    except:
-        env = Environment(
-            image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04",
-            name=env_name,
-            conda_file="conda.yaml",
-            description="Environment for clustering testing",
-        )
-        ml_client.environments.create_or_update(env)
-        print(f"Environment '{env_name}' registered.")
 
 # Example usage
 if __name__ == "__main__":
