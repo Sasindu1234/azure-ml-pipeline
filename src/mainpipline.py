@@ -370,7 +370,7 @@ if __name__ == "__main__":
             "query2.csv": "data/query2.csv"
         },
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu13",
+        "compute_instance_name": "sasindu1",
         "compute_cluster_name" : "testone"
     }
 
