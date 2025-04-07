@@ -77,7 +77,7 @@ def main():
         "workspace_name": os.getenv("WORKSPACE_NAME"),
         "storage_account_name" : os.getenv("STORAGE_NAME"),
         "countainer_namerun": "rawdata",
-        "compute_instance_name": "sasindu14",
+        "compute_instance_name": "sasindu15",
         "compute_cluster_name" : "testone"
     }
 
