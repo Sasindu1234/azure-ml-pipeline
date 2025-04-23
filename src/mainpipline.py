@@ -16,8 +16,7 @@ import time
 
 def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource_group,storage_account_name,location="eastus"):
     
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     resource_client = ResourceManagementClient(credential, subscription_id)
     storage_client = StorageManagementClient(credential, subscription_id)
     
@@ -59,8 +58,7 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
 
 
 def create_ml_resources(subscription_id, resource_group, workspace_name, compute_instance_name, compute_cluster_name, TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
     
     # Check and create compute instance
@@ -185,8 +183,7 @@ def create_environment(subscription_id, resource_group, workspace_name):
 
 def create_client(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource_group, workspace_name):
     # Initialize MLClient
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
     return ml_client
 
@@ -197,8 +194,7 @@ def load_components():
 
 
 def create_tenant_folders(TENANT_ID, CLIENT_ID, CLIENT_SECRET,storage_account_name, resource_group, subscription_id, container_name):
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     storage_client = StorageManagementClient(credential, subscription_id)
 
     keys = storage_client.storage_accounts.list_keys(
@@ -322,8 +318,7 @@ def pipline(ml_client,tenant_data_paths,compute_instance_name):
             return submitted_job.name 
         
 def delete_data_store(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name,workspace_name,datastore_names):
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group_name, workspace_name)
 
     for datastore_name in datastore_names:
@@ -335,8 +330,7 @@ def delete_data_store(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, reso
 
 
 def delete_storage_account(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name, storage_account_name):
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     storage_client = StorageManagementClient(credential, subscription_id)
     
     print(f"Deleting storage account: {storage_account_name}...")
@@ -347,8 +341,7 @@ def delete_storage_account(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id,
 
 
 def delete_compute_cluster(TENANT_ID, CLIENT_ID, CLIENT_SECRET, subscription_id, resource_group_name, workspace_name, compute_name):
-    credential = ManagedIdentityCredential(client_id=CLIENT_ID)
-    #credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
+    credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group_name, workspace_name)
     
     print(f"Deleting compute cluster: {compute_name}...")
