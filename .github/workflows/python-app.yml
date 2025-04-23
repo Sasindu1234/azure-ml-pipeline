@@ -1,11 +1,9 @@
 name: Azure ML Pipeline
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
   schedule:
-  - cron: '45 13 * * *' 
+   - cron: '30 14 * * *'
 
 env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
