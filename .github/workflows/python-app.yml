@@ -6,7 +6,7 @@ on:
       - main 
   workflow_dispatch:
   schedule:
-    - cron: '40 6 * * *' 
+    - cron: '50 6 * * *' 
 
 env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
