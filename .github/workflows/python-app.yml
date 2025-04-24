@@ -37,6 +37,6 @@ jobs:
         pip install azure-ai-ml azure-identity
     
     - name: ML Pipline run
-      run: python src/mainpipline.py
+      run: python src/run.py
     
    
