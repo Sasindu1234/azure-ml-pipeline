@@ -442,7 +442,7 @@ if __name__ == "__main__":
     print("Submitted jobs:", job_names)
 
  
-    print("Waiting for 3 minutes before cleanup...")
+    print("Waiting for 3 minutes before cleanup..")
 
 '''  
     time.sleep(120)
