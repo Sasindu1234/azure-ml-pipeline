@@ -3,7 +3,7 @@ name: Azure ML Pipeline
 on:
   workflow_dispatch:
   schedule:
-    - cron: '25 6 * * *' 
+    - cron: '40 6 * * *' 
 
 env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
