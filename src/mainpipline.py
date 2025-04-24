@@ -441,8 +441,10 @@ if __name__ == "__main__":
     job_names = pipline(ml_client,tenant_data_paths,config["compute_instance_name"])
     print("Submitted jobs:", job_names)
 
-'''   
+ 
     print("Waiting for 3 minutes before cleanup...")
+
+'''  
     time.sleep(120)
 
     delete_data_store(
