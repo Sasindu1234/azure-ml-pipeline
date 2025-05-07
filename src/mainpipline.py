@@ -465,7 +465,7 @@ if __name__ == "__main__":
         resource_group_name=config["resource_group"],
         storage_account_name = config["storage_account_name"]
     )
-  
+'''
     delete_compute_cluster(
         TENANT_ID = config["TENANT_ID"],
         CLIENT_ID = config["CLIENT_ID"],
@@ -476,3 +476,4 @@ if __name__ == "__main__":
         compute_name = config["compute_instance_name"]
         
     )
+'''
