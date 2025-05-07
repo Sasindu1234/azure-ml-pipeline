@@ -444,7 +444,7 @@ if __name__ == "__main__":
  
     print("Waiting for 3 minutes before cleanup..")
 
-'''  
+
     time.sleep(120)
 
     delete_data_store(
@@ -476,4 +476,3 @@ if __name__ == "__main__":
         compute_name = config["compute_instance_name"]
         
     )
-'''
