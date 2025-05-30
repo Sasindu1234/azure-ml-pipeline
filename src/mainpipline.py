@@ -55,8 +55,6 @@ def create_storage(TENANT_ID, CLIENT_ID, CLIENT_SECRET,subscription_id, resource
 
     
     
-
-
 def create_ml_resources(subscription_id, resource_group, workspace_name, compute_instance_name, compute_cluster_name, TENANT_ID, CLIENT_ID, CLIENT_SECRET, location="eastus"):
     credential = ClientSecretCredential(TENANT_ID, CLIENT_ID, CLIENT_SECRET)
     ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
